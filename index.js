@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { query } = require('express');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -40,8 +41,8 @@ async function run() {
     })
 
     app.get('/spot/:id', async(req, res) => {
-        const id = req.params.id;
-        const query = {_id: new ObjectId(id)}
+        const id =req.params.id;
+        const query = {_id: new ObjectId(id)};
         const result = await spotCollection.findOne(query);
         res.send(result);
     })
@@ -52,6 +53,13 @@ async function run() {
         const result = await spotCollection.insertOne(newSpot);
         res.send(result);
     })
+
+    app.delete('/spot/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await spotCollection.deleteOne(query);
+        res.send(result);
+    }) 
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
